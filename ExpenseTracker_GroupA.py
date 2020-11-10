@@ -16,16 +16,19 @@ class itemNode:
         self.name = name
         self.cost = cost
         self.category = None  # level of need
+        #self.node = {self.name, self.cost, self.category}
 
 #mutator methods
+
     def setCost(self, c):
         self.cost = c
+
 
     def setCategory(self, cat):
         self.category = cat
 
-    def setName(self, n):
-        self.name = n
+    def setName(self, name):
+        self.name = name
 
 #accessor methods:
     def getCost(self):
@@ -73,6 +76,7 @@ class listNode: #contains the total expenses of a single month
                 return item
 
 
+
 '''
 expense Tree sorts out the elements within the list
  left = cheap
@@ -112,7 +116,7 @@ class expenseTree:
     # the right node and display them in
     # specific order
 
-
+        #Matt: This will traverse through the expense Tree in order.
     def inOrderTrav(self):
         elements = []
         if self.left:  ###left
@@ -123,12 +127,14 @@ class expenseTree:
             elements += self.right.inOrderTrav()
         return elements
 
+        #Matt, this inserts a node into the expense tree
     def insert(self, val):
         if self.root == None:
             self.root = self(val)
         else:
             self.__insert(val, self.root)
 
+    # need to adjust the insert function to fit in with the expense tree
     def __insert(self, val, currNode):
         if val < currNode.val:
             if currNode.leftChild == None:
@@ -149,60 +155,38 @@ class expenseTree:
 
     # getItem from itemNode
     # parameters: name of the item
-    def getItem(self, name):
-        for each in self.l
-            if name == item.name:
-                return item
+    #def getItem(self, name):
+        #for each in self: #fix this
+            #if name == item.name:
+             #   return item
         # need a function to search for a specific item in the list node
         # need a helper function to traverse all the list nodes
 
-    #  func getMaxCost
+    #  Matt: this obtains the max cost within the expense
+    #        tree.
     def getMaxCost(self, max=0):
-        # current = self
-        # if self is None:
-        #     return None
-        # if self > max:
-        #     self = max
-        # return max
-        pass
+            current = listNode.getItem(self)
+            if current is None:
+                return None
+            if current > max:
+                max = current
+            return max
 
         # this find the minimum cost node
-
+        #Matt: this is the minimum cost finder.
     def getMinCost(self, minimum=0):
-        # if self is None: #if self = None then exit
-        #     return None
-        # current = self.root #temp val set to self.root
-        # #idk if these even works imma cry
-        # if current < self.root: # if current < self.root node
-        #     if self < current: # and self is < current
-        #         self = minimum #self is le minimum
-        pass
-
+        current = self # current is self.root node
+        if self is None:
+            return None
+        if current < self.root and current < self.right: #checking the root/right node
+            if current < self.left: #then we check the left node
+                minimum = current
+        return minimum
     # insert func to insert the data according to it's amount
 
-    def buildSTree(self, data):
-        if data == self.data:
-            return
-        # if the data inserted is less than cur value it'll
-        # go into the left node
-        if data < self.data:
-            if self.left:
-                self.left.buildSTree(data)
-            else:
-                self.left = self.BST(data)
-        # if the data is greater than the value
-        # of the current node then it goes right
-        else:
-            if self.right:
-                self.right.buildSTree(data)
-            else:
-                self.right = self.BST(data)
-    # this will first visit left node
-    # then the root node and finally
-    # the right node and display them in
-    # specific order*
 
 
+'''
 class Classifier: #TODO Himani: commenting outline
     def __init__(self,listnode)
         self.neccesity
@@ -210,11 +194,33 @@ class Classifier: #TODO Himani: commenting outline
 
     # luxury
     #
-    pass
+    pass'''
 
 
 
 #TODO Matt: add code to test itemNode and listNode
+
+ #This creates a node to hold our list of items
+list1 = list()
+test = itemNode(list1) #storing a list in itemNode
+test.setName("Rice") #name of product
+test.setCost(24) #price of produt
+test.setCategory("Food") #category of product
+
+listTest = listNode() #assigning listTest to listNode()
+listTest.append(test) #this adds test.ItemNode object to the listTest.listNode object
+listTest.getItem("Rice") # do we need to add a print function for clarity in getItem?
+print(listTest.getTotal()) # prints total cost in text itemNode
+
+expenseTest = expenseTree(listTest) #in order to initialize the tree we needed a listNode input.
+                                    #instead lets remove that and put a addListNode function for clarity
+ # we need a build tree function here
+# expenseTest.buildTree(listNode)
+
+expenseTest.getMaxCost(itemNode.getName()) # i was stuck here, think we need to go over it on Tuesday
+
+
+#extra
 sampleList = listNode()
 sampleList.append(3)
 
