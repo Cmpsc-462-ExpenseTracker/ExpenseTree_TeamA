@@ -1,15 +1,4 @@
-# Team A: Kavan Adeshara, Dillon Hector, Matthew Coutts, Himani Vommi
-# Team B: ZeZheng, Mis Champa
-
-# class node
-
-'''
-#Item Node
-# lets get started
-#this holds our item here
-'''
-
-
+# class to create individual item nodes
 class itemNode:
 
     def __init__(self, name, cost=0):
@@ -18,11 +7,10 @@ class itemNode:
         self.category = None  # level of need
         #self.node = {self.name, self.cost, self.category}
 
-#mutator methods
+# mutator methods
 
     def setCost(self, c):
         self.cost = c
-
 
     def setCategory(self, cat):
         self.category = cat
@@ -30,7 +18,7 @@ class itemNode:
     def setName(self, name):
         self.name = name
 
-#accessor methods:
+# accessor methods used to access different parts of the item:
     def getCost(self):
        return self.cost
 
@@ -40,21 +28,36 @@ class itemNode:
     def getName(self):
         return self.name
 '''
-ListNode - this contains list of all listNodes
+monthlyExpenses - this contains list of all listNodes
 this gets passed to the expense tree
-
 '''
 
-
-class listNode: #contains the total expenses of a single month
+# contains the total expenses of a single month
+class monthlyExpenses:
 
     # initialize
     def __init__(self):
 
-        self.l = []  # list of items held in a NODE (itemNode) | f(g(x))
+        self.l = []  # list of items held in a NODE (itemNode) |
         self.right = None
         self.left = None
         self.parent = None
+
+    # checks if the node is the leaf node
+    def is_leaf_node(self):
+        return (self.right == None) and (self.left == None)
+
+    # checks if the node has both nodes
+    def has_both_nodes(self):
+        return (self.right != None) and (self.left != None)
+
+    # check if the node has right node
+    def has_right_node(self):
+        return (self.right != None)
+
+    # check if the node has left node
+    def has_left_node(self):
+        return (self.left != None)
 
     # function to append listNode
     def append(self, itemNode):
@@ -62,15 +65,12 @@ class listNode: #contains the total expenses of a single month
 
     # function to get the total cost of the list
     def getTotal(self, total=0):
-
         for each in self.l:
             total += each.cost
-
         return total
 
     # function to acquire a specific item from the list: input by name
     def getItem(self, name):
-
         for item in self.l:
             if name == item.name:
                 return item
@@ -89,27 +89,25 @@ class expenseTree:
 
     # initializes the tree
     def __init__(self, listNode):
-        self.root = listNode
+        self.root = monthlyExpenses
 
-    # insert func to insert the data according to it's amount
-    def addNode(self, newListNode):
-
-        # if the data inserted is less than cur value itll
+    # insert function to insert the data according to its amount
+    def addNode(self, monthlyExpenses, currNode):
+        # if the data inserted is less than cur value it'll
         # go into the left node
-        if newListNode.getTotal() < self.root.getTotal():
-            if self.data:
-                self.left.addNode(self.data)
+        if monthlyExpenses.getTotal() < self.root.getTotal(): #compares the new expense tree with old expense tree
+            if self.root.left == None:                         #if left of old expense tree is none
+                self.root.left = monthlyExpenses #then the left of old is added to monthly expenses
+                monthlyExpenses.parent = self.root
             else:
-                self.left = self.addNode(self.data)
+                self.addNode(self, monthlyExpenses, currNode.left)
 
-
-        # if the data is greater than the value
-        # of the current node then it goes right
-        else:
-            if self.right:
-                self.right.addNode(self.data)
-            else:
-                self.right = self.addNode(self.data)
+        # if the data is greater than the root the value gets added to the right side
+        #
+        #   if self.root.right:
+        #         self.right.addNode(self.data)
+        # else:
+        #     self.right = self.addNode(self.data)
 
     # this will first visit left node
     # then the root node and finally
@@ -119,55 +117,33 @@ class expenseTree:
         #Matt: This will traverse through the expense Tree in order.
     def inOrderTrav(self):
         elements = []
-        if self.left:  ###left
-            elements += self.left.inOrderTrav()  # left
-        elements.append(self.data)
+        parent = monthlyExpenses.self.parent
+        left = monthlyExpenses.self.left
+        right= monthlyExpenses.self.right
+        if parent:          #visit root node first
+            elements += parent
+        if left:            #visit the left node
+            elements+= left
+        if right:           #visit the right node
+            elements += right
+        return elements #return the list of elements inOrder
 
-        if self.right:
-            elements += self.right.inOrderTrav()
-        return elements
-
-        #Matt, this inserts a node into the expense tree
+       #Matt, this inserts a node into the expense tree
     def insert(self, val):
-        if self.root == None:
+        if monthlyExpenses.self.root == None:
             self.root = self(val)
         else:
             self.__insert(val, self.root)
 
-    # need to adjust the insert function to fit in with the expense tree
-    def __insert(self, val, currNode):
-        if val < currNode.val:
-            if currNode.leftChild == None:
-                currNode.leftChild = Node(val, parent=currNode)
-                self.updateBalanceFactor(currNode)
-                self.checkForBalanace(currNode)
-            else:
-                self.__insert(val, currNode.leftChild)
-        elif val > currNode.val:
-            if currNode.rightChild == None:
-                currNode.rightChild = Node(val, parent=currNode)
-                self.updateBalanceFactor(currNode)
-                self.checkForBalanace(currNode)
-            else:
-                self.__insert(val, currNode.rightChild)
-        else:
-            return "value already exist"
 
-    # getItem from itemNode
-    # parameters: name of the item
-    #def getItem(self, name):
-        #for each in self: #fix this
-            #if name == item.name:
-             #   return item
-        # need a function to search for a specific item in the list node
-        # need a helper function to traverse all the list nodes
-
-    #  Matt: this obtains the max cost within the expense
-    #        tree.
+# Function to get the max cost of the tree
     def getMaxCost(self, max=0):
-            current = listNode.getItem(self)
+# Current is set to the root of the tree
+            current = itemNode.getName(self)
+# If there aren't any nodes in the tree return None
             if current is None:
                 return None
+# If the current is greater than the max set that value to the max
             if current > max:
                 max = current
             return max
@@ -175,14 +151,112 @@ class expenseTree:
         # this find the minimum cost node
         #Matt: this is the minimum cost finder.
     def getMinCost(self, minimum=0):
-        current = self # current is self.root node
+# current is self.root node
+        monthlyExpenses.current = self
         if self is None:
             return None
-        if current < self.root and current < self.right: #checking the root/right node
-            if current < self.left: #then we check the left node
-                minimum = current
+        if monthlyExpenses.current < monthlyExpenses.self.root and monthlyExpenses.current < monthlyExpenses.self.right: #checking the root/right node
+            if monthlyExpenses.current < monthlyExpenses.self.left: #then we check the left node
+                minimum = monthlyExpenses.current
         return minimum
+
     # insert func to insert the data according to it's amount
+
+    # rebalances the entire tree
+    def rebalance(self, currNode):
+        if currNode.balanceFactor < 0:
+            if currNode.rightChild.balanceFactor > 0:
+                self.rightRotation(currNode.rightChild)
+                self.leftRotation(currNode)
+            else:
+                self.leftRotation(currNode)
+        elif currNode.balanceFactor > 0:
+            if currNode.leftChild.balanceFactor < 0:
+                self.leftRotation(currNode.leftChild)
+                self.rightRotation(currNode)
+            else:
+                self.rightRotation(currNode)
+        else:
+            return "Error"
+
+    # function to perform right rotation
+    def rightRotation(self, node):
+
+        A = node
+        B = node.leftChild
+        BL = B.rightChild
+        C = B.leftChild
+
+        newParent = B
+        A.leftChild = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
+        else:
+            if A.parent.leftChild == A:
+                A.parent.leftChild = B
+            else:
+                A.parent.rightChild = B
+
+        B.rightChild = A
+        A.parent = B
+
+        self.updateBalanceFactor(B)
+        self.updateBalanceFactor(A)
+
+    # function to perform left rotation
+    def leftRotation(self, node):
+
+        A = node
+        B = node.rightChild
+        BL = B.leftChild
+        C = B.rightChild
+
+        newParent = B
+        A.rightChild = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
+        else:
+            if A.parent.leftChild == A:
+                A.parent.leftChild = B
+            else:
+                A.parent.rightChild = B
+
+        B.leftChild = A
+        A.parent = B
+
+        self.updateBalanceFactor(B)
+        self.updateBalanceFactor(A)
+
+    # function to update the balance factor
+    def updateBalanceFactor(self, currNode):
+
+        if currNode == None:
+            return
+        currNode.height = 1 + max(self.getHeight(currNode.leftChild), self.getHeight(currNode.rightChild))
+        currNode.balanceFactor = self.getHeight(currNode.leftChild) - self.getHeight(currNode.rightChild)
+        self.updateBalanceFactor(currNode.parent)
+
+    # function to check balance factor of each node in the tree
+    def checkForBalanace(self, currNode):
+        if currNode == None:
+            return
+        bF = currNode.balanceFactor
+        if abs(bF) > 1:
+            self.rebalance(currNode)
+            return
+        self.checkForBalanace(currNode.parent)
 
 
 
@@ -191,37 +265,11 @@ class Classifier: #TODO Himani: commenting outline
     def __init__(self,listnode)
         self.neccesity
         self.luxury
-
     # luxury
     #
     pass'''
 
-
-
-#TODO Matt: add code to test itemNode and listNode
-
- #This creates a node to hold our list of items
-list1 = list()
-test = itemNode(list1) #storing a list in itemNode
-test.setName("Rice") #name of product
-test.setCost(24) #price of produt
-test.setCategory("Food") #category of product
-
-listTest = listNode() #assigning listTest to listNode()
-listTest.append(test) #this adds test.ItemNode object to the listTest.listNode object
-listTest.getItem("Rice") # do we need to add a print function for clarity in getItem?
-print(listTest.getTotal()) # prints total cost in text itemNode
-
-expenseTest = expenseTree(listTest) #in order to initialize the tree we needed a listNode input.
-                                    #instead lets remove that and put a addListNode function for clarity
- # we need a build tree function here
-# expenseTest.buildTree(listNode)
-
-expenseTest.getMaxCost(itemNode.getName()) # i was stuck here, think we need to go over it on Tuesday
-
-
-#extra
-sampleList = listNode()
-sampleList.append(3)
-
-print(sampleList.getTotal)
+monthlyList = monthlyExpenses()
+condoms = itemNode("Dickstra", cost=100)
+hoes = itemNode("Kayleigh McEnany", cost=1)
+blueface = itemNode("yea aight")
