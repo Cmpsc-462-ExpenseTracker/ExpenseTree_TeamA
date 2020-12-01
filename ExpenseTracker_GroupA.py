@@ -1,221 +1,175 @@
-# Team A: Kavan Adeshara, Dillon Hector, Matthew Coutts, Himani Vommi
-# Team B: ZeZheng, Mis Champa
+class item:
 
-# class node
-
-'''
-#Item Node
-# lets get started
-#this holds our item here
-'''
-
-
-class itemNode:
-
-    def __init__(self, name, cost=0):
+    def __init__(self, name=None, cost=None, necessity=False):
         self.name = name
+        self.necessity = necessity
         self.cost = cost
-        self.category = None  # level of need
 
-#mutator methods
-    def setCost(self, c):
-        self.cost = c
+class monthly_expenses:
 
-    def setCategory(self, cat):
-        self.category = cat
-
-    def setName(self, n):
-        self.name = n
-
-#accessor methods:
-    def getCost(self):
-       return self.cost
-
-    def getCategory(self):
-        return self.category
-
-    def getName(self):
-        return self.name
-'''
-ListNode - this contains list of all listNodes
-this gets passed to the expense tree
-
-'''
-
-
-class listNode: #contains the total expenses of a single month
-
-    # initialize
-    def __init__(self):
-
-        self.l = []  # list of items held in a NODE (itemNode) | f(g(x))
-        self.right = None
-        self.left = None
+    def __init__(self, l):
+        self.l = l
         self.parent = None
+        self.right_child = None
+        self.left_child = None
+        self.balance_factor = 0
+        self.height = 1
 
-    # function to append listNode
-    def append(self, itemNode):
-        self.l.append(itemNode)
-
-    # function to get the total cost of the list
-    def getTotal(self, total=0):
-
-        for each in self.l:
-            total += each.cost
-
+    def total_cost(self):
+        total = 0
+        for each_expense in self.l:
+            total += each_expense.cost
         return total
 
-    # function to acquire a specific item from the list: input by name
-    def getItem(self, name):
 
-        for item in self.l:
-            if name == item.name:
-                return item
+class expense_tree:
 
+    def __init__(self):
+        self.root = None
 
-'''
-expense Tree sorts out the elements within the list
- left = cheap
-  right = expensive
-  BST oriented
-'''
-
-
-class expenseTree:
-
-    # initializes the tree
-    def __init__(self, listNode):
-        self.root = listNode
-
-    # insert func to insert the data according to it's amount
-    def addNode(self, newListNode):
-
-        # if the data inserted is less than cur value itll
-        # go into the left node
-        if newListNode.getTotal() < self.root.getTotal():
-            if self.data:
-                self.left.addNode(self.data)
-            else:
-                self.left = self.addNode(self.data)
-
-
-        # if the data is greater than the value
-        # of the current node then it goes right
+    # function to add individual monthly expenses
+    def add_monthly_expense(self, l):
+        if not self.root:
+            self.root = l
         else:
-            if self.right:
-                self.right.addNode(self.data)
+            self.__add_monthly_expense(self.root, l)
+
+    # IGNORE
+    # private function to recursively check for the new monthly expense node to be placed
+    def __add_monthly_expense(self, current_node, l):
+
+        if l.total_cost() < current_node.total_cost():
+            if current_node.left_child == None:
+                current_node.left_child = l
+                current_node.left_child.parent = current_node
+                self.update_balance(current_node)
+                self.check_balance(current_node)
             else:
-                self.right = self.addNode(self.data)
-
-    # this will first visit left node
-    # then the root node and finally
-    # the right node and display them in
-    # specific order
-
-
-    def inOrderTrav(self):
-        elements = []
-        if self.left:  ###left
-            elements += self.left.inOrderTrav()  # left
-        elements.append(self.data)
-
-        if self.right:
-            elements += self.right.inOrderTrav()
-        return elements
-
-    def insert(self, val):
-        if self.root == None:
-            self.root = self(val)
-        else:
-            self.__insert(val, self.root)
-
-    def __insert(self, val, currNode):
-        if val < currNode.val:
-            if currNode.leftChild == None:
-                currNode.leftChild = Node(val, parent=currNode)
-                self.updateBalanceFactor(currNode)
-                self.checkForBalanace(currNode)
+                self.__add_monthly_expense(current_node.left_child, l)
+        elif l.total_cost() > current_node.total_cost():
+            if current_node.right_child == None:
+                current_node.right_child = l
+                current_node.right_child.parent = current_node
+                self.update_balance(current_node)
+                self.check_balance(current_node)
             else:
-                self.__insert(val, currNode.leftChild)
-        elif val > currNode.val:
-            if currNode.rightChild == None:
-                currNode.rightChild = Node(val, parent=currNode)
-                self.updateBalanceFactor(currNode)
-                self.checkForBalanace(currNode)
-            else:
-                self.__insert(val, currNode.rightChild)
-        else:
-            return "value already exist"
+                self.__add_monthly_expense(current_node.right_child, l)
 
-    # getItem from itemNode
-    # parameters: name of the item
-    def getItem(self, name):
-        for each in self.l
-            if name == item.name:
-                return item
-        # need a function to search for a specific item in the list node
-        # need a helper function to traverse all the list nodes
-
-    #  func getMaxCost
-    def getMaxCost(self, max=0):
-        # current = self
-        # if self is None:
-        #     return None
-        # if self > max:
-        #     self = max
-        # return max
-        pass
-
-        # this find the minimum cost node
-
-    def getMinCost(self, minimum=0):
-        # if self is None: #if self = None then exit
-        #     return None
-        # current = self.root #temp val set to self.root
-        # #idk if these even works imma cry
-        # if current < self.root: # if current < self.root node
-        #     if self < current: # and self is < current
-        #         self = minimum #self is le minimum
-        pass
-
-    # insert func to insert the data according to it's amount
-
-    def buildSTree(self, data):
-        if data == self.data:
+    # function to check balance of the expense tree
+    def check_balance(self, current_node):
+        if current_node == None:
             return
-        # if the data inserted is less than cur value it'll
-        # go into the left node
-        if data < self.data:
-            if self.left:
-                self.left.buildSTree(data)
+        bF = current_node.balance_factor
+        if abs(bF) > 1:
+            self.rebalance(current_node)
+            return
+        self.check_balance(current_node.parent)
+
+    # function to update the balance factor
+    def update_balance(self, current_node):
+        if current_node == None:
+            return
+        current_node.height = 1 + max(self.get_height(current_node.left_child), self.get_height(current_node.right_child))
+        current_node.balance_factor = self.get_height(current_node.left_child) - self.get_height(current_node.right_child)
+        self.update_balance(current_node.parent)
+
+    # function to access the height of a node
+    def get_height(self, node):
+        if node == None:
+            return 0
+        return node.height
+
+    # function to rebalance the expense tree
+    def rebalance(self, current_node):
+        if current_node.balance_factor < 0:
+            if current_node.right_child.balance_factor > 0:
+                self.right_rotation(current_node.right_child)
+                self.left_rotation(current_node)
             else:
-                self.left = self.BST(data)
-        # if the data is greater than the value
-        # of the current node then it goes right
+                self.left_rotation(current_node)
+        elif current_node.balance_factor > 0:
+            if current_node.left_child.balance_factor < 0:
+                self.left_rotation(current_node.left_child)
+                self.right_rotation(current_node)
+            else:
+                self.right_rotation(current_node)
+
+    def right_rotation(self, node):
+
+        A = node
+        B = node.left_child
+        BL = B.right_child
+        C = B.left_child
+
+        newParent = B
+        A.left_child = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
         else:
-            if self.right:
-                self.right.buildSTree(data)
+            if A.parent.left_child == A:
+                A.parent.left_child = B
             else:
-                self.right = self.BST(data)
-    # this will first visit left node
-    # then the root node and finally
-    # the right node and display them in
-    # specific order*
+                A.parent.right_child = B
+
+        B.right_child = A
+        A.parent = B
+
+        self.update_balance(B)
+        self.update_balance(A)
+
+    def left_rotation(self, node):
+
+        A = node
+        B = node.right_child
+        BL = B.left_child
+        C = B.right_child
+
+        newParent = B
+        A.right_child = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
+        else:
+            if A.parent.left_child == A:
+                A.parent.left_child = B
+            else:
+                A.parent.right_child = B
+
+        B.left_child = A
+        A.parent = B
+
+        self.update_balance(B)
+        self.update_balance(A)
 
 
-class Classifier: #TODO Himani: commenting outline
-    def __init__(self,listnode)
-        self.neccesity
-        self.luxury
-
-    # luxury
-    #
-    pass
 
 
 
-#TODO Matt: add code to test itemNode and listNode
-sampleList = listNode()
-sampleList.append(3)
 
-print(sampleList.getTotal)
+sample_list = monthly_expenses([item('toothpaste', 1.25, necessity=True),
+                                item('keyboard', 60, necessity=False),
+                                item('book', 15.24, necessity=True)
+                                ])
+
+sample_list1 = monthly_expenses([item('dijkstra algorithm', 100, necessity=True),
+                                 item('random bullshit', 1000000, necessity=True),
+                                 item('some more bullshit', 2.5, necessity=False)
+                                 ])
+
+test_tree = expense_tree()
+test_tree.add_monthly_expense(sample_list)
+test_tree.add_monthly_expense(sample_list1)
+
+print(test_tree.root.total_cost())
+print(test_tree.root.right_child.total_cost())
