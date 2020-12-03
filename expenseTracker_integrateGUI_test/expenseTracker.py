@@ -324,7 +324,7 @@ def classifier(item):  # Himani: commenting outline
     return [category, levelOfNeed]
 
 
-item = itemNode("movie", 20)
+'''item = itemNode("movie", 20)
 categoryList = classifier(item)
 item.setCategory(categoryList[0])
 item.setLevelOfNeed(categoryList[1])
@@ -341,7 +341,7 @@ categoryList = classifier(item3)
 item3.setCategory(categoryList[0])
 item3.setLevelOfNeed(categoryList[1])
 item3.setDescription("new suit for interview")
-item3.toString()
+item3.toString()'''
 '''
 **SAMPLE CLASSIFIER RUN: ***
 name: movie
@@ -360,7 +360,5 @@ category: clothing
 level of need: necessity
 description: new suit for interview
 
-"""monthlyList = monthlyExpenses()
-Lunch = itemNode("Salad", cost=100)
-Dinner = itemNode("Steak n' Potatoes", cost=1)"""
+'''
 
