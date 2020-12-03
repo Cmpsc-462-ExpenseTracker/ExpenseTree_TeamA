@@ -1,17 +1,17 @@
 #Matt: this imports the expense tracker .py file
 import expenseTracker
-
 #Matt: december is the monthly expenses
 december = expenseTracker.monthlyExpenses()
-#food is used to hold items - food category (testing purposes)
+#Matt: food is used to hold items - food category (testing purposes)
 food = expenseTracker
+#Matt: this will use the classify function
+classify = expenseTracker
 
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Notebook
 from tkcalendar import DateEntry
-
 
 def Addexpense():
     a = EDate.get()
@@ -25,16 +25,18 @@ def Addexpense():
     food.itemNode(b, cost=c) #holds food items
 
 
-
+def classifyReturn():
+    b = Title.get()
+    c = Expense.get()
+    return classify.classifier(food.itemNode(b, cost=c))
 
 GUI = Tk()
 GUI.title('** Expense Recorder **')
-GUI.geometry('700x500')
+GUI.geometry('1000x600')
 # Maximize windrow
 # GUI. state ('zoomed')
 
 Tab = Notebook(GUI)
-
 F1 = Frame(Tab, width=500, height=500, bg="light grey")
 Tab.add(F1, text='Expense')
 
@@ -67,9 +69,15 @@ EExpense.grid(row=2, column=1, padx=5, pady=5, sticky='w')
 BFIadd = ttk.Button(F1, text='Add', command=Addexpense)
 BFIadd.grid(row=3, column=1, padx=5, pady=5, sticky='w', ipadx=10, ipady=10)
 
+#========= Row 4 =======================
+
+Category = StringVar() #Matt: allows Category to display a string
+CCategory = ttk.Entry(F1, textvariable=classifyReturn(), font=(None, 18)) #attributes for Category on GUI
+CCategory.grid(row=4, column=1, padx=5, pady=5, sticky='w') #Grid features for Category
+
 # ===========tree view===========
 
-TVList = ['Date', 'Title', 'Expense']
+TVList = ['Date', 'Title', 'Expense','Category']
 TVExpense = ttk.Treeview(F1, column=TVList, show='headings', height=5)
 for i in TVList:
     TVExpense.heading(i, text=i.title())
