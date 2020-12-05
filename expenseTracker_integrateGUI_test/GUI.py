@@ -1,11 +1,9 @@
 #Matt: this imports the expense tracker .py file
-import expenseTracker
+from testAddNode import *
 #Matt: december is the monthly expenses
-december = expenseTracker.monthlyExpenses()
-#Matt: food is used to hold items - food category (testing purposes)
-food = expenseTracker
-#Matt: this will use the classify function
-classify = expenseTracker
+
+
+
 
 from tkinter import *
 from tkinter import ttk
@@ -13,22 +11,33 @@ from tkinter import messagebox
 from tkinter.ttk import Notebook
 from tkcalendar import DateEntry
 
+expense_tracker = expense_tree()
+month_list = []
+
 def Addexpense():
-    a = EDate.get()
-    b = Title.get()
-    c = Expense.get()
-    data = [a, b, c]
-    print(data)
+
+
+    Date = EDate.get()
+    ItemName = Title.get()
+    ItemPrice = float(Expense.get())
+    ItemCategory = item(ItemName, ItemPrice).category
+
+    data = [Date, ItemName, ItemPrice, ItemCategory]
+
+    month_list.append(item(ItemName, ItemPrice))
+
+    m_l = monthly_expenses(month_list)
+    expense_tracker.add_monthly_expense(m_l)
+    print(expense_tracker.get_LON_items()[0])
+
+    '''decemberMonth = december.monthly_expenses(decemberItem)
+    december.expense_tree.add_monthly_expense(decemberMonth, decemberItem)'''
+
     TVExpense.insert('', 'end', values=data)
 
-    #Matt: This adds b (Title) and c (cost) to the current item node
-    food.itemNode(b, cost=c) #holds food items
 
 
-def classifyReturn():
-    b = Title.get()
-    c = Expense.get()
-    return classify.classifier(food.itemNode(b, cost=c))
+
 
 GUI = Tk()
 GUI.title('** Expense Recorder **')
@@ -58,12 +67,12 @@ ETitle = ttk.Entry(F1, textvariable= Title,font=(None,18))
 ETitle.grid(row=1, column=1, padx=5, pady=5)
 # ========== Row 2 =====================
 LExpense = ttk.Label(F1, text='Expense', font=(None, 18))
-LExpense.grid(row=2, column=0, padx=5, pady=5)
+LExpense.grid(row=2, column=0, padx=5, pady=5, sticky='w')
 
 Expense = StringVar()
 
-EExpense = ttk.Entry(F1, textvariable= Expense, font=(None, 18))
-EExpense.grid(row=2, column=1, padx=5, pady=5, sticky='w')
+EExpense = ttk.Entry(F1, textvariable=Expense, font=(None, 18))
+EExpense.grid(row=2, column=1, padx=5, pady=5)
 
 # ========== Row 3 =====================
 BFIadd = ttk.Button(F1, text='Add', command=Addexpense)
@@ -72,7 +81,7 @@ BFIadd.grid(row=3, column=1, padx=5, pady=5, sticky='w', ipadx=10, ipady=10)
 #========= Row 4 =======================
 
 Category = StringVar() #Matt: allows Category to display a string
-CCategory = ttk.Entry(F1, textvariable=classifyReturn(), font=(None, 18)) #attributes for Category on GUI
+CCategory = ttk.Entry(F1, textvariable=Category, font=(None, 18)) #attributes for Category on GUI
 CCategory.grid(row=4, column=1, padx=5, pady=5, sticky='w') #Grid features for Category
 
 # ===========tree view===========
