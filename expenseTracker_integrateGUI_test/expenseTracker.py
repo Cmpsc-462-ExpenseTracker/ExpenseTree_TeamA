@@ -1,266 +1,9 @@
-# class to create individual item nodes
-class itemNode:
-
-    def __init__(self, name, cost=0):
-        self.name = name
-        self.cost = cost
-        self.category = None  # level of need
-        #self.node = {self.name, self.cost, self.category}
-
-# mutator methods
-
-    def setCost(self, c):
-        self.cost = c
-
-    def setCategory(self, cat):
-        self.category = cat
-
-    def setName(self, name):
-        self.name = name
-
-# accessor methods used to access different parts of the item:
-    def getCost(self):
-       return self.cost
-
-    def getCategory(self):
-        return self.category
-
-    def getName(self):
-        return self.name
-'''
-monthlyExpenses - this contains list of all listNodes
-this gets passed to the expense tree
-'''
-
-# contains the total expenses of a single month
-class monthlyExpenses:
-
-    # initialize
-    def __init__(self):
-
-        self.l = []  # list of items held in a NODE (itemNode) |
-        self.right = None
-        self.left = None
-        self.parent = None
-
-    # checks if the node is the leaf node
-    def is_leaf_node(self):
-        return (self.right == None) and (self.left == None)
-
-    # checks if the node has both nodes
-    def has_both_nodes(self):
-        return (self.right != None) and (self.left != None)
-
-    # check if the node has right node
-    def has_right_node(self):
-        return (self.right != None)
-
-    # check if the node has left node
-    def has_left_node(self):
-        return (self.left != None)
-
-    # function to append listNode
-    def append(self, itemNode):
-        self.l.append(itemNode)
-
-    # function to get the total cost of the list
-    def getTotal(self, total=0):
-        for each in self.l:
-            total += each.cost
-        return total
-
-    # function to acquire a specific item from the list: input by name
-    def getItem(self, name):
-        for item in self.l:
-            if name == item.name:
-                return item
-
-
-
-'''
-expense Tree sorts out the elements within the list
- left = cheap
-  right = expensive
-  BST oriented
-'''
-
-
-class expenseTree:
-
-    # initializes the tree
-    def __init__(self, listNode):
-        self.root = monthlyExpenses
-
-    # insert function to insert the data according to its amount
-    def addNode(self, monthlyExpenses, currNode):
-        # if the data inserted is less than cur value it'll
-        # go into the left node
-        if monthlyExpenses.getTotal() < self.root.getTotal(): #compares the new expense tree with old expense tree
-            if self.root.left == None:                         #if left of old expense tree is none
-                self.root.left = monthlyExpenses #then the left of old is added to monthly expenses
-                monthlyExpenses.parent = self.root
-            else:
-                self.addNode(self, monthlyExpenses, currNode.left)
-
-        # if the data is greater than the root the value gets added to the right side
-        #
-        #   if self.root.right:
-        #         self.right.addNode(self.data)
-        # else:
-        #     self.right = self.addNode(self.data)
-
-    # this will first visit left node
-    # then the root node and finally
-    # the right node and display them in
-    # specific order
-
-        #Matt: This will traverse through the expense Tree in order.
-    def inOrderTrav(self):
-        elements = []
-        parent = monthlyExpenses.self.parent
-        left = monthlyExpenses.self.left
-        right= monthlyExpenses.self.right
-        if parent:          #visit root node first
-            elements += parent
-        if left:            #visit the left node
-            elements+= left
-        if right:           #visit the right node
-            elements += right
-        return elements #return the list of elements inOrder
-
-       #Matt, this inserts a node into the expense tree
-    def insert(self, val):
-        if monthlyExpenses.self.root == None:
-            self.root = self(val)
-        else:
-            self.__insert(val, self.root)
-
-
-# Function to get the max cost of the tree
-    def getMaxCost(self, max=0):
-# Current is set to the root of the tree
-            current = itemNode.getName(self)
-# If there aren't any nodes in the tree return None
-            if current is None:
-                return None
-# If the current is greater than the max set that value to the max
-            if current > max:
-                max = current
-            return max
-
-        # this find the minimum cost node
-        #Matt: this is the minimum cost finder.
-    def getMinCost(self, minimum=0):
-# current is self.root node
-        monthlyExpenses.current = self
-        if self is None:
-            return None
-        if monthlyExpenses.current < monthlyExpenses.self.root and monthlyExpenses.current < monthlyExpenses.self.right: #checking the root/right node
-            if monthlyExpenses.current < monthlyExpenses.self.left: #then we check the left node
-                minimum = monthlyExpenses.current
-        return minimum
-
-    # insert func to insert the data according to it's amount
-
-    # rebalances the entire tree
-    def rebalance(self, currNode):
-        if currNode.balanceFactor < 0:
-            if currNode.rightChild.balanceFactor > 0:
-                self.rightRotation(currNode.rightChild)
-                self.leftRotation(currNode)
-            else:
-                self.leftRotation(currNode)
-        elif currNode.balanceFactor > 0:
-            if currNode.leftChild.balanceFactor < 0:
-                self.leftRotation(currNode.leftChild)
-                self.rightRotation(currNode)
-            else:
-                self.rightRotation(currNode)
-        else:
-            return "Error"
-
-    # function to perform right rotation
-    def rightRotation(self, node):
-
-        A = node
-        B = node.leftChild
-        BL = B.rightChild
-        C = B.leftChild
-
-        newParent = B
-        A.leftChild = BL
-
-        if BL != None:
-            BL.parent = A
-
-        B.parent = A.parent
-
-        if A.parent == None:
-            self.root = B
-        else:
-            if A.parent.leftChild == A:
-                A.parent.leftChild = B
-            else:
-                A.parent.rightChild = B
-
-        B.rightChild = A
-        A.parent = B
-
-        self.updateBalanceFactor(B)
-        self.updateBalanceFactor(A)
-
-    # function to perform left rotation
-    def leftRotation(self, node):
-
-        A = node
-        B = node.rightChild
-        BL = B.leftChild
-        C = B.rightChild
-
-        newParent = B
-        A.rightChild = BL
-
-        if BL != None:
-            BL.parent = A
-
-        B.parent = A.parent
-
-        if A.parent == None:
-            self.root = B
-        else:
-            if A.parent.leftChild == A:
-                A.parent.leftChild = B
-            else:
-                A.parent.rightChild = B
-
-        B.leftChild = A
-        A.parent = B
-
-        self.updateBalanceFactor(B)
-        self.updateBalanceFactor(A)
-
-    # function to update the balance factor
-    def updateBalanceFactor(self, currNode):
-
-        if currNode == None:
-            return
-        currNode.height = 1 + max(self.getHeight(currNode.leftChild), self.getHeight(currNode.rightChild))
-        currNode.balanceFactor = self.getHeight(currNode.leftChild) - self.getHeight(currNode.rightChild)
-        self.updateBalanceFactor(currNode.parent)
-
-    # function to check balance factor of each node in the tree
-    def checkForBalanace(self, currNode):
-        if currNode == None:
-            return
-        bF = currNode.balanceFactor
-        if abs(bF) > 1:
-            self.rebalance(currNode)
-            return
-        self.checkForBalanace(currNode.parent)
+import matplotlib.pyplot as plt
+import numpy as np
 
 def classifier(item):  # Himani: commenting outline
+
     # store off cost and name from item for classification use
-    cost = item.cost
     name = item.name
     category = "" #type of category
     levelOfNeed = "necessity" #necessity (default) or luxury
@@ -274,6 +17,7 @@ def classifier(item):  # Himani: commenting outline
     utilities = ["utilities","electricity", "water", "garbage", "sewage", "heating", "cooling", "AC", "mobile network", "internet",
                  "cable", "laundry"]
     clothing = ["clothing","professional attire", "formal wear", "casual wear", "shoes", "accessories"]
+    fashion_clothing = ["fashion clothing", "gucci", "supreme", "jewelery", "rolex", "louis vitton", "cartier", "chanel"]
     healthcare = ["healthcare", "medicine","primary care", "dental care", "specialty care", "urgent care", "medication", "medical devices",
                   "support", "nursing"]
     insurance = ["insurance","health insurance", "homeowner's insurance", "car insurance", "life insurance", "disability insurance"]
@@ -281,7 +25,7 @@ def classifier(item):  # Himani: commenting outline
     personal = ["personal", "memberships", "haircut", "salon", "cosmetics", "babysitter", "birthday", "anniversary", "holiday",
                 "wedding"]
     loans = ["personal loan", "student loan", "credit card"]
-    education = ["education","textbooks", "student fees", "lab fees", "school supplies", "clubs", "conferences"]
+    education = ["education","textbooks", "student fees", "lab fees", "school supplies", "clubs", "conferences", "books"]
     savings = ["savings", "emergency", "long-term savings"]
     entertainment = ["entertainment", "games", "movie", "concerts", "party", "vacations", "alcohol", "subscription", "sport",
                     "social events"]
@@ -297,6 +41,8 @@ def classifier(item):  # Himani: commenting outline
         category = "utilities"
     elif(name in clothing):
         category = "clothing"
+    elif(name[0] in fashion_clothing):
+        category = "fashion clothing"
     elif(name in healthcare):
         category = "healthcare"
     elif(name in insurance):
@@ -304,7 +50,7 @@ def classifier(item):  # Himani: commenting outline
     elif(name in householdItems):
         category = "household items"
     elif(name in personal):
-        category = personal
+        category = "personal"
     elif(name in loans):
         category = "loans"
     elif(name in education):
@@ -317,48 +63,269 @@ def classifier(item):  # Himani: commenting outline
         category = "miscellaneous" #if category isn't identified
 
 #luxury if personal, entertainment (may need adjusting - perhaps add functions to tweak definition of "luxury" for each user using input)
-    if (category == "personal" or category == "entertainment"):
+    if (category == "personal" or category == "entertainment" or category == "fashion clothing"):
         levelOfNeed = "luxury"
 
 #returns an array of the category and sub category:
     return [category, levelOfNeed]
 
+class item:
 
-'''item = itemNode("movie", 20)
-categoryList = classifier(item)
-item.setCategory(categoryList[0])
-item.setLevelOfNeed(categoryList[1])
-item.toString()
+    def __init__(self, name=None, cost=None):
+        self.name = name
+        self.cost = cost
+        self.levelOfNeed = classifier(self)[1]
+        self.category = classifier(self)[0]
 
-item2 = itemNode("water", 70)
-categoryList = classifier(item2)
-item2.setCategory(categoryList[0])
-item2.setLevelOfNeed(categoryList[1])
-item2.toString()
+class monthly_expenses:
 
-item3 = itemNode("professional attire", 100)
-categoryList = classifier(item3)
-item3.setCategory(categoryList[0])
-item3.setLevelOfNeed(categoryList[1])
-item3.setDescription("new suit for interview")
-item3.toString()'''
-'''
-**SAMPLE CLASSIFIER RUN: ***
-name: movie
-cost: 20
-category: entertainment
-level of need: luxury
-description: none
-name: water
-cost: 70
-category: utilities
-level of need: necessity
-description: none
-name: professional attire
-cost: 100
-category: clothing
-level of need: necessity
-description: new suit for interview
+    def __init__(self, l):
+        self.l = l
+        self.parent = None
+        self.right_child = None
+        self.left_child = None
+        self.balance_factor = 0
+        self.height = 1
 
-'''
+    def total_cost(self):
+        total = 0
+        for each_expense in self.l:
+            total += each_expense.cost
+        return total
+
+
+class expense_tree:
+
+    def __init__(self):
+        self.root = None
+
+    # function to add individual monthly expenses
+    def add_monthly_expense(self, l):
+        if not self.root:
+            self.root = l
+        else:
+            self.__add_monthly_expense(self.root, l)
+
+    # IGNORE
+    # private function to recursively check for the new monthly expense node to be placed
+    def __add_monthly_expense(self, current_node, l):
+
+        if l.total_cost() < current_node.total_cost():
+            if current_node.left_child == None:
+                current_node.left_child = l
+                current_node.left_child.parent = current_node
+                self.update_balance(current_node)
+                self.check_balance(current_node)
+            else:
+                self.__add_monthly_expense(current_node.left_child, l)
+        elif l.total_cost() > current_node.total_cost():
+            if current_node.right_child == None:
+                current_node.right_child = l
+                current_node.right_child.parent = current_node
+                self.update_balance(current_node)
+                self.check_balance(current_node)
+            else:
+                self.__add_monthly_expense(current_node.right_child, l)
+
+    # function to check balance of the expense tree
+    def check_balance(self, current_node):
+        if current_node == None:
+            return
+        bF = current_node.balance_factor
+        if abs(bF) > 1:
+            self.rebalance(current_node)
+            return
+        self.check_balance(current_node.parent)
+
+    # function to update the balance factor
+    def update_balance(self, current_node):
+        if current_node == None:
+            return
+        current_node.height = 1 + max(self.get_height(current_node.left_child), self.get_height(current_node.right_child))
+        current_node.balance_factor = self.get_height(current_node.left_child) - self.get_height(current_node.right_child)
+        self.update_balance(current_node.parent)
+
+    # function to access the height of a node
+    def get_height(self, node):
+        if node == None:
+            return 0
+        return node.height
+
+    # function to rebalance the expense tree
+    def rebalance(self, current_node):
+        if current_node.balance_factor < 0:
+            if current_node.right_child.balance_factor > 0:
+                self.right_rotation(current_node.right_child)
+                self.left_rotation(current_node)
+            else:
+                self.left_rotation(current_node)
+        elif current_node.balance_factor > 0:
+            if current_node.left_child.balance_factor < 0:
+                self.left_rotation(current_node.left_child)
+                self.right_rotation(current_node)
+            else:
+                self.right_rotation(current_node)
+
+    def right_rotation(self, node):
+
+        A = node
+        B = node.left_child
+        BL = B.right_child
+        C = B.left_child
+
+        newParent = B
+        A.left_child = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
+        else:
+            if A.parent.left_child == A:
+                A.parent.left_child = B
+            else:
+                A.parent.right_child = B
+
+        B.right_child = A
+        A.parent = B
+
+        self.update_balance(B)
+        self.update_balance(A)
+
+    def left_rotation(self, node):
+
+        A = node
+        B = node.right_child
+        BL = B.left_child
+        C = B.right_child
+
+        newParent = B
+        A.right_child = BL
+
+        if BL != None:
+            BL.parent = A
+
+        B.parent = A.parent
+
+        if A.parent == None:
+            self.root = B
+        else:
+            if A.parent.left_child == A:
+                A.parent.left_child = B
+            else:
+                A.parent.right_child = B
+
+        B.left_child = A
+        A.parent = B
+
+        self.update_balance(B)
+        self.update_balance(A)
+
+
+    def get_LON_items(self):
+        if self.root != None:
+            items = []
+            self.__get_LON_items(self.root, items)
+        overall_list = []
+        monthly_necessity = []
+        monthly_luxury = []
+        necessities = []
+        luxuries = []
+        for item in items:
+            for expense in item.l:
+                if expense.levelOfNeed == "necessity":
+                    monthly_necessity.append(expense)
+                else:
+                    monthly_luxury.append(expense)
+            necessities.append(monthly_necessity)
+            luxuries.append(monthly_luxury)
+            monthly_luxury = []
+            monthly_necessity = []
+        return necessities, luxuries
+
+
+    def __get_LON_items(self, current_node, items):
+        if current_node != None:
+            self.__get_LON_items(current_node.left_child, items)
+            items.append(current_node)
+            self.__get_LON_items(current_node.right_child, items)
+
+def graph_levelOfNeed(monthly_list, necessity_list=False):
+
+    housing, transportation, food, utilities, clothing, healthcare, insurance, household_items, loans, education, savings, miscellaneous = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    entertainment, personal, fashion_clothing = 0, 0, 0
+
+    for item_node in monthly_list:
+
+        if necessity_list:
+            if item_node.category == "housing":
+                housing += item_node.cost
+            elif item_node.category == "transportation":
+                transportation += item_node.cost
+            elif item_node.category == "food":
+                food += item_node.cost
+            elif item_node.category == "utilities":
+                utilities += item_node.cost
+            elif item_node.category == "clothing":
+                clothing += item_node.cost
+            elif item_node.category == "healthcare":
+                healthcare += item_node.cost
+            elif item_node.category == "insurance":
+                insurance += item_node.cost
+            elif item_node.category == "household items":
+                household_items += item_node.cost
+            elif item_node.category == "loans":
+                household_items += item_node.cost
+            elif item_node.category == "education":
+                education += item_node.cost
+            elif item_node.category == "savings":
+                savings += item_node.cost
+            else:
+                miscellaneous += item_node.cost
+        else:
+            if item_node.category == "entertainment":
+                entertainment += item_node.cost
+            elif item_node.category == "personal":
+                personal += item_node.cost
+            else:
+                fashion_clothing += item_node.cost
+
+    if necessity_list:
+        expenses = (housing, transportation, food, utilities, clothing, healthcare, insurance, household_items, loans, education, savings, miscellaneous)
+    else:
+        expenses = (entertainment, personal, fashion_clothing)
+
+    if necessity_list:
+        categories = ["housing", "transportation", "food", "utilities", "clothing", "healthcare", "insurance", "household items", "loans", "education", "savings", "miscellaneous"]
+    else:
+        categories = ["entertainment", "personal", "fashion clothing"]
+
+    y_pos = np.arange(len(categories))
+    plt.bar(y_pos, expenses, align='center', alpha=0.5)
+    plt.xticks(y_pos, categories)
+    plt.ylabel('Total Cost ($)')
+    plt.title('Expenditure bar graph')
+
+    plt.show()
+
+
+# sample_list = monthly_expenses([item('utilities', 1.25),
+#                                 item('electricity', 60),
+#                                 item('books', 15.24)
+#                                 ])
+#
+# sample_list1 = monthly_expenses([item('games', 100),
+#                                  item('movies', 1000000),
+#                                  item('water', 2.5)
+#                                  ])
+#
+# test_tree = expense_tree()
+# test_tree.add_monthly_expense(sample_list)
+# test_tree.add_monthly_expense(sample_list1)
+#
+# test_necessity = test_tree.get_LON_items()[1][1]
+# graph_levelOfNeed(test_necessity, False)
 
