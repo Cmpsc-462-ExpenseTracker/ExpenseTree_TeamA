@@ -12,10 +12,23 @@ from tkinter.ttk import Notebook
 from tkcalendar import DateEntry
 
 expense_tracker = expense_tree()
-month_list = []
+months = {    1:[],
+              2:[],
+              3:[],
+              4:[],
+              5:[],
+              6:[],
+              7:[],
+              8:[],
+              9:[],
+              10:[],
+              11:[],
+              12:[]}
+
 
 def Addexpense():
 
+    print('yes2')
 
     Date = EDate.get()
     ItemName = Title.get()
@@ -24,17 +37,39 @@ def Addexpense():
 
     data = [Date, ItemName, ItemPrice, ItemCategory]
 
-    month_list.append(item(ItemName, ItemPrice))
+    # sets up the key from the months dictionary
+    # example: 1/12/20 --> January (1)
 
-    m_l = monthly_expenses(month_list)
-    expense_tracker.add_monthly_expense(m_l)
-    print(expense_tracker.get_LON_items()[0])
+    month_num = Date[:2]
+    if '/' in month_num:
+        month_num = int(Date[0])
+    else:
+        month_num = int(Date[:2])
+    print("Month num", month_num)
+    months[month_num].append(item(ItemName, ItemPrice))
+    print("length ", len(months[month_num]))
 
-    '''decemberMonth = december.monthly_expenses(decemberItem)
-    december.expense_tree.add_monthly_expense(decemberMonth, decemberItem)'''
+    for key in months.keys():
+        m_l = monthly_expenses(months[key])
+        expense_tracker.add_monthly_expense(m_l)
+
+    expense_tracker.printTree(expense_tracker.root)
+
+    # print("Root of the expense tree", expense_tracker.root.l)
+    #
+    # print("Left Child of the root", expense_tracker.root.left_child)
+    #
+    # '''decemberMonth = december.monthly_expenses(decemberItem)
+    # december.expense_tree.add_monthly_expense(decemberMonth, decemberItem)'''
 
     TVExpense.insert('', 'end', values=data)
 
+
+# def New_Month():
+#
+#     print('yes1')
+#     Addexpense()
+#     # print(expense_tracker.get_LON_items()[0])
 
 
 
@@ -77,6 +112,11 @@ EExpense.grid(row=2, column=1, padx=5, pady=5)
 # ========== Row 3 =====================
 BFIadd = ttk.Button(F1, text='Add', command=Addexpense)
 BFIadd.grid(row=3, column=1, padx=5, pady=5, sticky='w', ipadx=10, ipady=10)
+
+# ========== Row 3 =====================
+# BFInewMonth = ttk.Button(F1, text='New Month', command=New_Month)
+# BFInewMonth.grid(row=3, column=3, padx=5, pady=5, sticky='w', ipadx=10, ipady=10)
+
 
 #========= Row 4 =======================
 
